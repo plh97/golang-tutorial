@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: ohayo
+      MYSQL_DATABASE: gorm_db_new
       MYSQL_ROOT_HOST: "%"
       TZ: Asia/Shanghai
     command:
@@ -15,7 +15,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     ports:
-      - "3305:3306"
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -38,25 +38,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      
 
-#  phpmyadmin:
-#    image: phpmyadmin:5.2-apache
-#    container_name: ohayo-phpmyadmin
-#    restart: unless-stopped
-#    environment:
-#      PMA_HOST: 43.165.190.31
-#      PMA_PORT: 3306
-#      PMA_USER: ohayo
-#      PMA_PASSWORD: fKnCrMKCeMjaG5Mf
-#      # PMA_HOST: 43.165.134.93
-#      # PMA_PORT: 3306
-#      # PMA_USER: ohayo
-#      # PMA_PASSWORD: 3RaHx4GiKwj2tka6
-#    ports:
-#      - "8080:80"
-#    depends_on:
-#      - mysql
+  phpmyadmin:
+    image: phpmyadmin:5.2-apache
+    container_name: ohayo-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: 123456
+      #  PMA_HOST: 43.165.190.31
+      #  PMA_PORT: 3306
+      #  PMA_USER: ohayo
+      #  PMA_PASSWORD: fKnCrMKCeMjaG5Mf
+      # PMA_HOST: 43.165.134.93
+      # PMA_PORT: 3306
+      # PMA_USER: ohayo
+      # PMA_PASSWORD: 3RaHx4GiKwj2tka6
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
 
   # web:
   #   image: nginx:latest

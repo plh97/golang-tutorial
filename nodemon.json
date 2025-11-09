@@ -4,5 +4,5 @@
   "watch": ["./"],
   "ext": "go",
   "signal": "SIGTERM",
-  "exec": "go run ./main.go"
+  "exec": "clear && go run ./main.go"
 }

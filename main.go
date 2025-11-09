@@ -2,43 +2,68 @@ package main
 
 import (
 	"fmt"
+	"golang-tutorial/global"
+	"golang-tutorial/models"
 	"log"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"math/rand"
 )
 
-type User struct {
-	ID    int
-	Name  string
-	Age   int
-	Email string
+func query() {
+	var userList models.UserModel
+	global.DB.Unscoped().First(&userList, 11)
+	fmt.Println(userList)
 }
 
-func main() {
-	dsn := "root:123456@tcp(127.0.0.1:3305)/gorm_db_new"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	err = db.AutoMigrate(&User{})
-	if err != nil {
-		return
-	}
-	// Create a new User instance
-	newUser := User{
-		Name:  "Alice",
+func create() {
+	newUser := models.UserModel{
+		Name:  "John Doe",
 		Email: "alice@example.com",
-		Age:   30,
+		Age:   rand.Intn(50) + 1,
 	}
 
-	// Create the record in the database
-	err = db.Create(&newUser).Error
+	//Create the record in the database
+	err := global.DB.Create(&newUser).Error
 	if err != nil {
 		log.Fatalf("create user failed: %s", err)
 	}
-	var userList []User
-	db.Find(&userList)
+}
+
+func update() {
+	newUser := models.UserModel{
+		// Name:  "John Doe112",
+		// Email: "alice@example.com",
+		Age: 0,
+		// ID:        5,
+		// CreatedAt: time.Now(),
+	}
+
+	//Create the record in the database
+	err := global.DB.Model(&models.UserModel{ID: 1}).Select("age").Updates(newUser).Error
+	if err != nil {
+		log.Fatalf("create user failed: %s", err)
+	}
+}
+func delete() {
+	global.DB.Unscoped().Delete(&models.UserModel{}, 11)
+	// global.DB.Find(&models.UserModel{}, 11)
+}
+
+func deeplyQuery() {
+	var userList []models.UserModel
+	global.DB.Where(models.UserModel{
+		Name: "2134",
+		Age:  0,
+	}).First(&userList)
 	fmt.Println(userList)
+}
+
+func main() {
+	global.Connect()
+	global.Migrate()
+	create()
+	query()
+	update()
+	// query()
+	delete()
+	deeplyQuery()
 }
