@@ -50,10 +50,13 @@ func delete() {
 
 func deeplyQuery() {
 	var userList []models.UserModel
-	global.DB.Where(models.UserModel{
-		Name: "2134",
-		Age:  0,
-	}).First(&userList)
+	// query := global.DB.Where(models.UserModel{
+	// 	Name: "2134",
+	// 	Age:  0,
+	// })
+	// query := global.DB.Where("age > 18 and name = ?", "John Doe")
+	// global.DB = global.DB.Where("name = ?", "John Doe")
+	global.DB.Order("age asc").Not("age > 2").Or("name = ?", "John1 Doe").Find(&userList)
 	fmt.Println(userList)
 }
 
