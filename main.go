@@ -6,6 +6,9 @@ import (
 	"golang-tutorial/models"
 	"log"
 	"math/rand"
+	"strconv"
+
+	"gorm.io/gorm"
 )
 
 func query() {
@@ -16,9 +19,9 @@ func query() {
 
 func create() {
 	newUser := models.UserModel{
-		Name:  "John Doe",
-		Email: "alice@example.com",
-		Age:   rand.Intn(50) + 1,
+		Name: "John Doe" + strconv.Itoa(rand.Intn(10000)),
+		// Email: "alice@example.com",
+		Age: rand.Intn(50) + 1,
 	}
 
 	//Create the record in the database
@@ -44,7 +47,7 @@ func update() {
 	}
 }
 func delete() {
-	global.DB.Unscoped().Delete(&models.UserModel{}, 11)
+	global.DB.Unscoped().Delete(&models.UserModel{}, 14)
 	// global.DB.Find(&models.UserModel{}, 11)
 }
 
@@ -60,13 +63,48 @@ func deeplyQuery() {
 	fmt.Println(userList)
 }
 
+func scan() {
+	// type User struct {
+	// 	Label string `gorm:"column:name"`
+	// 	Value int `gorm:"column:age"`
+	// }
+	// var nameList []User
+	// global.DB.Model(models.UserModel{}).Scan(&nameList)
+	// fmt.Println(nameList)
+
+	var ageList []int
+	global.DB.Model(models.UserModel{}).Distinct("age").Pluck("age", &ageList)
+	fmt.Println(ageList)
+}
+
+func pagination() {
+	limit := 2
+	page := 0
+	var userList []models.UserModel
+	global.DB.Limit(limit).Offset((page - 1) * limit).Find(&userList)
+	fmt.Println(userList)
+}
+
+func scope() {
+	var userList []models.UserModel
+	global.DB.Scopes(Age18).Find(userList)
+	fmt.Println(userList)
+}
+
+func Age18(tx *gorm.DB) *gorm.DB {
+	return tx.Where("age > 18")
+}
+
 func main() {
 	global.Connect()
 	global.Migrate()
-	create()
-	query()
-	update()
+	// create()
 	// query()
-	delete()
-	deeplyQuery()
+	// update()
+	// query()
+	// delete()
+	// deeplyQuery()
+	// scan()
+	// pagination()
+	scope()
 }

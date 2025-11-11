@@ -8,12 +8,18 @@ import (
 )
 
 type UserModel struct {
-	ID        int64  `gorm:"primaryKey"`              // primary key
-	Name      string `gorm:"size:25;not null,unique"` // name, unique, cannot be null
-	Age       int    `gorm:"default 18"`
-	Email     string
-	CreatedAt time.Time //created by default
+	ID        int
+	Name      string `gorm:"size:16;not null;unique"` // name, unique, cannot be null
+	Age       int    `gorm:"default:18"`
+	CreatedAt time.Time
 	DeletedAt gorm.DeletedAt
+}
+
+type UserDetailModel struct {
+	ID        int
+	UserID    int       `gorm:"unique"`
+	UserModel UserModel `gorm:"foreignKey:UserID"`
+	Email     string    `gorm:"size:32"`
 }
 
 func (u *UserModel) BeforeCreate(tx *gorm.DB) error {
