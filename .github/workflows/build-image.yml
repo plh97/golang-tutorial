@@ -4,7 +4,7 @@ name: Build and Publish Ansible CI Image
 on:
   push:
     branches:
-      - main1
+      - main143
     # paths:
     #   - './ansible/Dockerfile' # 仅当 Dockerfile 发生变化时才重新构建
 
