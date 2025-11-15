@@ -16,7 +16,7 @@ jobs:
       # [新增] 显式提供 GHCR 凭证，解决 pull denied 问题
       credentials:
         username: ${{ github.actor }} 
-        password: ${{ secrets.GITHUB_TOKEN }} # 使用内置令牌进行 GHCR 读取认证
+        password: ${{ secrets.PAT_FOR_GHCR }} # 使用内置令牌进行 GHCR 读取认证
     
     # 注意：现在整个 Job 都在 Docker 容器内运行，不需要在 run 命令中激活环境
     steps:
