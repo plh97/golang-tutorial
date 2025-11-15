@@ -1,0 +1,158 @@
+name: GitHub Actions CICD
+run-name: ${{ github.actor }} Deploy Test Ohayo CMS 🚀
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  Ansible-Actions:
+    runs-on: ubuntu-latest
+    # 核心修改：使用您刚刚构建的 Docker 镜像作为运行环境
+    container:
+      image: ghcr.io/plh97/ansible-v7-ci:latest # 🚨 替换为您在 build-image.yml 中使用的完整镜像地址
+    
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      # --- 移除 Ansible 安装和 Cache 步骤 ---
+      # ⚠️ 注意：由于您在 Dockerfile 中已经安装了 openssh-client，
+      # 理论上以下步骤应该直接在容器内工作。
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_ed25519
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+          config: |
+            Host vultr
+              HostName 43.165.190.31
+              CheckHostIP no
+              Port 22
+              User root
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H 43.165.190.31 >> ~/.ssh/known_hosts
+
+      - name: Run ansible
+        run: |
+          cd ~/.ssh/ && ls &&
+          cd $GITHUB_WORKSPACE/ansible && ansible-playbook test-ohayo.yml
+
+      # - name: Send Lark Notification
+      #   run: |
+      #     # 1. 计算耗时（秒）
+      #     START_TIME=$(date -d "${{ github.run_started_at }}" +%s)
+      #     END_TIME=$(date +%s)
+      #     DURATION_SECONDS=$((END_TIME - START_TIME))
+
+      #     # 2. 动态变量
+      #     RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #     DEPLOY_TIME=$(date '+%Y年%m月%d日 %H:%M 东京时间')
+      #     COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+
+      #     # 3. 格式化：X分Y秒
+      #     MIN=$(((DURATION_SECONDS / 1000) / 60))
+      #     SEC=$(((DURATION_SECONDS / 1000) % 60))
+      #     DURATION_STR="${MIN}分${SEC}秒"
+      #     # 4. JSON body (使用 interactive 卡片消息)
+      #     JSON_BODY='{
+      #       "msg_type": "interactive",
+      #       "card": {
+      #         "header": {
+      #           "title": {
+      #             "tag": "plain_text",
+      #             "content": "🚀 Ohayo 管理后台 测试环境 发版成功！"
+      #           },
+      #           "template": "green"
+      #         },
+      #         "elements": [
+      #           {
+      #             "tag": "div",
+      #             "fields": [
+      #               {
+      #                 "is_short": true,
+      #                 "text": {
+      #                   "tag": "lark_md",
+      #                   "content": "**🧑‍💻 开发人员**\n<at id=7550574046761455125>@Liom</at>"
+      #                 }
+      #               },
+      #               {
+      #                 "is_short": true,
+      #                 "text": {
+      #                   "tag": "lark_md",
+      #                   "content": "**⏰ 部署时间**\n'$DEPLOY_TIME'"
+      #                 }
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "tag": "div",
+      #             "fields": [
+      #               {
+      #                 "is_short": true,
+      #                 "text": {
+      #                   "tag": "lark_md",
+      #                   "content": "**🔎 测试人员**\n<at id=7508645221995921441>@Mayor TEST</at>"
+      #                 }
+      #               },
+      #               {
+      #                 "is_short": true,
+      #                 "text": {
+      #                   "tag": "lark_md",
+      #                   "content": "**📝 提交信息**\n'$COMMIT_MESSAGE'"
+      #                 }
+      #               }
+      #             ]
+      #           },
+      #           {
+      #             "tag": "hr"
+      #           },
+      #           {
+      #             "tag": "div",
+      #             "text": {
+      #               "tag": "lark_md",
+      #               "content": "✅ 系统已就绪，请在PC浏览器打开链接，并及时验证！"
+      #             }
+      #           },
+      #           {
+      #             "tag": "div",
+      #             "text": {
+      #               "tag": "lark_md",
+      #               "content": "⏱️ **部署耗时: '$DURATION_STR'**"
+      #             }
+      #           },
+      #           {
+      #             "tag": "action",
+      #             "actions": [
+      #               {
+      #                 "tag": "button",
+      #                 "text": {
+      #                   "tag": "plain_text",
+      #                   "content": "🔗 验证链接"
+      #                 },
+      #                 "url": "https://test-manage.ohayo.date",
+      #                 "type": "primary"
+      #               },
+      #               {
+      #                 "tag": "button",
+      #                 "text": {
+      #                   "tag": "plain_text",
+      #                   "content": "🛠️ 查看部署详情"
+      #                 },
+      #                 "url": "'$RUN_URL'",
+      #                 "type": "default"
+      #               }
+      #             ]
+      #           }
+      #         ]
+      #       }
+      #     }'
+
+      #     # 5. 发送 Lark 消息
+      #     curl -X POST \
+      #       https://open.larksuite.com/open-apis/bot/v2/hook/1f6ec875-9d28-4ab7-bb07-8dcaf05997f5 \
+      #       -H 'Content-Type: application/json' \
+      #       -d "$JSON_BODY"
+      #   env:
+      #     TZ: "Asia/Tokyo"
