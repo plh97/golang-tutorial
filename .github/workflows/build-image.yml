@@ -1,0 +1,32 @@
+# .github/workflows/build-image.yml
+name: Build and Publish Ansible CI Image
+
+on:
+  push:
+    branches:
+      - main
+    # paths:
+    #   - './ansible/Dockerfile' # 仅当 Dockerfile 发生变化时才重新构建
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      # 登录到 GitHub Container Registry (GHCR)
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT_FOR_GHCR }} # 使用内置令牌进行认证
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ansible # Dockerfile 所在目录
+          push: true
+          tags: ghcr.io/liom-source/ansible-v7-ci:latest 
+          # 🚨 替换为你自己的仓库和镜像名称
+          # 例如：ghcr.io/plh97/ansible-v7-ci:latest
