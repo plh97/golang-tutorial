@@ -27,6 +27,6 @@ jobs:
         with:
           context: ./ansible # Dockerfile 所在目录
           push: true
-          tags: ghcr.io/liom-source/ansible-v7-ci:latest 
+          tags: ghcr.io/plh97/ansible-v7-ci:latest 
           # 🚨 替换为你自己的仓库和镜像名称
           # 例如：ghcr.io/plh97/ansible-v7-ci:latest
