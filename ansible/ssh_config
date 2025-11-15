@@ -1,0 +1,13 @@
+Host test-ohayo
+    HostName 43.165.190.31
+    IdentityFile ~/.ssh/id_ed25519
+    CheckHostIP no
+    Port 22
+    User root
+
+Host ohayo
+    HostName 43.165.134.93
+    IdentityFile ~/.ssh/id_ed25519
+    CheckHostIP no
+    Port 22
+    User root

@@ -1,0 +1,55 @@
+---
+- hosts: ohayo
+  remote_user: root
+  become: yes
+  become_method: sudo
+  vars:
+    target_port: 8291 # Define the port you want to kill
+    cmd_dir: /www/wwwroot/ohayo-CMS/cmd
+
+  tasks:
+    - name: switch branch
+      command:
+        chdir: "{{ cmd_dir }}"
+        cmd: git checkout main
+
+    - name: pull latest code on main branch
+      command:
+        chdir: "{{ cmd_dir }}"
+        cmd: git pull
+
+    - name: Find PID on port {{ target_port }}
+      shell: lsof -t -i :{{ target_port }} | head -1
+      register: pid
+      changed_when: false
+      ignore_errors: true
+
+    - name: Kill old process if exists
+      command: kill -9 {{ pid.stdout }}
+      when: pid.stdout | length > 0
+      ignore_errors: true
+
+    - name: Wait 2 seconds for port release
+      pause:
+        seconds: 2
+      when: pid.stdout | length > 0
+
+    - name: Start new server (no hang!)
+      shell: |
+        nohup {{ cmd_dir }}/main api -e release -g manage \
+        > {{ cmd_dir }}/app.log 2>&1 &
+      args:
+        chdir: "{{ cmd_dir }}"
+      async: 10        # 异步执行，最多等 10 秒
+      poll: 0          # 不轮询，立即返回
+      ignore_errors: true
+
+    - name: Confirm server is running
+      shell: ss -ltnp | grep -q ":{{ target_port }}" && echo "running" || echo "failed"
+      register: port_check
+      changed_when: false
+      retries: 5
+      delay: 2
+      until: port_check.stdout == "running"
+
+...
