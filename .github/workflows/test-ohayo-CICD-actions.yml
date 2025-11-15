@@ -1,5 +1,7 @@
 name: GitHub Actions CICD
+
 run-name: ${{ github.actor }} Deploy Test Ohayo CMS 🚀
+
 on:
   push:
     branches:
@@ -10,13 +12,17 @@ jobs:
     # 核心修改：使用您刚刚构建的 Docker 镜像作为运行环境
     container:
       image: ghcr.io/plh97/ansible-v7-ci:latest # 🚨 替换为您在 build-image.yml 中使用的完整镜像地址
+      
+      # [新增] 显式提供 GHCR 凭证，解决 pull denied 问题
+      credentials:
+        username: ${{ github.actor }} 
+        password: ${{ secrets.GITHUB_TOKEN }} # 使用内置令牌进行 GHCR 读取认证
     
+    # 注意：现在整个 Job 都在 Docker 容器内运行，不需要在 run 命令中激活环境
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       # --- 移除 Ansible 安装和 Cache 步骤 ---
-      # ⚠️ 注意：由于您在 Dockerfile 中已经安装了 openssh-client，
-      # 理论上以下步骤应该直接在容器内工作。
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
