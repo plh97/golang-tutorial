@@ -95,9 +95,41 @@ func Age18(tx *gorm.DB) *gorm.DB {
 	return tx.Where("age > 18")
 }
 
+func oneToOne() {
+	// err := global.DB.Create(&models.UserModel{
+	// 	Name: "feng feng4",
+	// 	Age: 25,
+	// 	UserDetailModel: &models.UserDetailModel{
+	// 		Email: "ff@gmail.com",
+	// 	},
+	// })
+	// fmt.Println(err)
+	// create user detail
+	// global.DB.Create(&models.UserDetailModel{
+	// 	Email:     "FENGFENG@gmail.com",
+	// 	UserModel: &models.UserModel{ID: 23},
+	// 	UserID:    23,
+	// })
+
+	// // forward query
+	// var id = 23
+	// var detail models.UserDetailModel
+	// global.DB.Preload("UserModel").Take(&detail, "user_id = ?", id)
+	// fmt.Println(detail.Email, detail.UserModel.Name)
+
+	// // reverse query
+	// var user models.UserModel
+	// global.DB.Preload("UserDetailModel").Take(&user, id)
+	// fmt.Println(user.Name, user.UserDetailModel.Email)
+
+	// delete
+	var user models.UserModel
+	global.DB.Take()
+}
+
 func main() {
 	global.Connect()
-	global.Migrate()
+	// global.Migrate()
 	// create()
 	// query()
 	// update()
@@ -106,5 +138,6 @@ func main() {
 	// deeplyQuery()
 	// scan()
 	// pagination()
-	scope()
+	// scope()
+	oneToOne()
 }
