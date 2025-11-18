@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"golang-tutorial/global"
 	"golang-tutorial/models"
@@ -123,8 +124,20 @@ func oneToOne() {
 	// fmt.Println(user.Name, user.UserDetailModel.Email)
 
 	// delete
-	var user models.UserModel
-	global.DB.Take()
+}
+
+func runRedis() {
+	ctx := context.Background()
+	oldVal, err := global.RDB.GetSet(ctx, "goredistestkey", "new val3232").Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Set goredistestkey: ", oldVal)
+	// val, err := global.RDB.Get(ctx, "goredistestkey").Result()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("goredistestkey: ", val)
 }
 
 func main() {
@@ -139,5 +152,6 @@ func main() {
 	// scan()
 	// pagination()
 	// scope()
-	oneToOne()
+	// oneToOne()
+	runRedis()
 }

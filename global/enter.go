@@ -5,11 +5,13 @@ import (
 	"golang-tutorial/models"
 	"log"
 
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
+var RDB *redis.Client
 
 func Migrate() {
 	if DB.Migrator().HasTable(&models.UserDetailModel{}) {
@@ -33,4 +35,10 @@ func Connect() {
 		return
 	}
 	DB = db
+
+	RDB = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
