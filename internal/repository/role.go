@@ -43,11 +43,11 @@ func (r *roleRepository) GetRoleList(ctx context.Context) ([]model.Role, error) 
 // 参数：需要把要创建的角色数据 (role) 传进来
 // 返回：error (如果创建失败)
 func (r *roleRepository) CreateRole(ctx context.Context, role *model.Role) (*model.Role, error) {
-	// err := r.db.WithContext(ctx).Create(role).Error
-	err := r.DB(ctx).
-		Model(&role).
-		Association("Permissions").
-		Replace(role.Permissions) // 传入的是完整的 Permission 实体数组 (可能为空)
+	err := r.db.WithContext(ctx).Create(role).Error
+	// err := r.DB(ctx).
+	// 	Model(&role).
+	// 	Association("Permissions").
+	// 	Replace(role.Permissions) // 传入的是完整的 Permission 实体数组 (可能为空)
 	return role, err
 }
 

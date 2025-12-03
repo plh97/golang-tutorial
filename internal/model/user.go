@@ -2,10 +2,9 @@ package model
 
 type User struct {
 	BaseModel
-
-	UserId   string `gorm:"unique;not null"`
-	Password string `gorm:"not null"`
-	Email    string `gorm:"not null"`
+	UserId   string `gorm:"unique;not null" json:"user_id"`
+	Password string `gorm:"not null" json:"-"`
+	Email    string `gorm:"not null" json:"email"`
 	// CreatedAt time.Time
 	// UpdatedAt time.Time
 	// DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -26,7 +25,7 @@ type User struct {
 	LastLoginTime   int    `gorm:"column:last_login_time;type:int;not null" json:"last_login_time"`         // 最后登录时间
 	LastLoginType   int    `gorm:"column:last_login_type;type:tinyint;not null" json:"last_login_type"`     // 最后登录类型 0游客 1微信服务号 2微信小程序
 	DeactivateTime  int    `gorm:"column:deactivate_time;type:int;not null" json:"deactivate_time"`         // 注销时间
-	Roles           []Role `gorm:"many2many:sys_user_roles;"`                                               // role
+	Roles           []Role `gorm:"many2many:sys_user_roles;" json:"roles"`                                  // role
 }
 
 func (u *User) TableName() string {

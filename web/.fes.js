@@ -1,7 +1,7 @@
 import { defineBuildConfig } from '@fesjs/fes'
 
 export default defineBuildConfig({
-  title: 'OHAYO 后台管理系统',
+  title: '后台管理系统',
   router: {
     mode: 'history',
   },
@@ -12,7 +12,7 @@ export default defineBuildConfig({
     },
   },
   layout: {
-    title: 'OHAYO 后台管理系统',
+    title: '后台管理系统',
     logo: '/favicon_io/favicon.ico',
     // footer: 'Created by MumbleFE',
     navigation: 'mixin',

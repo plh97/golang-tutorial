@@ -147,3 +147,18 @@ func (h *UserHandler) UpdateProfile(ctx *gin.Context) {
 
 	v1.HandleSuccess(ctx, nil)
 }
+
+func (h *UserHandler) UpdateUser(ctx *gin.Context) {
+	var req v1.UpdateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		v1.HandleError(ctx, http.StatusBadRequest, v1.ErrBadRequest, nil)
+		return
+	}
+
+	if err := h.userService.UpdateUser(ctx, &req); err != nil {
+		v1.HandleError(ctx, http.StatusInternalServerError, v1.ErrInternalServerError, nil)
+		return
+	}
+
+	v1.HandleSuccess(ctx, nil)
+}

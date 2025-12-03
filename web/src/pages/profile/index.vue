@@ -1,23 +1,13 @@
 <script setup lang="ts">
 import type { IUserProfile } from '@/interface'
+import { defineRouteMeta } from '@fesjs/fes'
 import { FButton, FForm, FFormItem, FGrid, FGridItem, FInput, FMessage, FRadio, FRadioGroup, FSpace } from '@fesjs/fes-design'
 import { LoadingOutlined } from '@fesjs/fes-design/icon'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRequest } from 'vue-hooks-plus'
 import { request } from '@/api'
 import { useValidator } from '@/common/hooks'
 import Upload from '@/components/upload.vue'
-import { defineRouteMeta } from '@fesjs/fes'
-import { image } from 'html2canvas/dist/types/css/types/image'
-
-
-defineRouteMeta({
-  name: 'profile',
-  title: '个人中心',
-  layout: {
-    // navigation: null,
-  },
-})
 
 const props = defineProps<{
   loading?: boolean
@@ -27,27 +17,32 @@ const props = defineProps<{
   onCancel?: () => void
 }>()
 
+defineRouteMeta({
+  name: 'profile',
+  title: '个人中心',
+  layout: {
+    // navigation: null,
+  },
+})
+
 const data = reactive<Partial<IUserProfile>>({
-  userId: "32", 
-  "nickname": "32",
-  "email": "",
+  userId: 0,
+  nickname: '32',
+  email: '',
   gender: 1,
   image: [],
 })
-
-const format = ref()
 
 const { loading } = useRequest(() => {
   return request('/profile')
 }, {
   onSuccess(res) {
     Object.keys(res).forEach((k) => {
-      if (k === 'image' && res?.[k]) {
-        data[k] = [res?.[k]]
+      if (k === 'image') {
+        data[k] = res?.[k] ? [res?.[k]] : []
         return
       }
-      // @ts-ignore
-      data[k] = res?.[k]
+      Object.assign(data, res)
     })
   },
 })
@@ -62,7 +57,6 @@ async function handleSubmit() {
   }, { method: 'put' })
   FMessage.success('保存成功')
 }
-
 </script>
 
 <template>

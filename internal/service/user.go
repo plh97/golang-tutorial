@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -16,6 +17,7 @@ type UserService interface {
 	GetProfile(ctx context.Context, userId string) (*v1.GetProfileResponseData, error)
 	GetUserList(ctx context.Context) (*v1.GetUserListResponseData, error)
 	UpdateProfile(ctx context.Context, userId string, req *v1.UpdateProfileRequest) error
+	UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) error
 }
 
 func NewUserService(
@@ -106,9 +108,14 @@ func (s *userService) GetUserList(ctx context.Context) (*v1.GetUserListResponseD
 	if err != nil {
 		return nil, err
 	}
+	count, err1 := s.userRepo.GetUserCount(ctx)
+	if err1 != nil {
+		return nil, err1
+	}
 
 	return &v1.GetUserListResponseData{
 		List: *user,
+		Total: count,
 	}, nil
 }
 
@@ -118,8 +125,12 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *v1.
 		return err
 	}
 
-	user.Email = req.Email
-	user.Name = req.Nickname
+	if req.Email != "" {
+		user.Email = req.Email
+	}
+	if req.Nickname != "" {
+		user.Name = req.Nickname
+	}
 	user.Image = req.Image
 
 	if err = s.userRepo.Update(ctx, user); err != nil {
@@ -127,4 +138,37 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *v1.
 	}
 
 	return nil
+}
+
+func (s *userService) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) error {
+	user, err := s.userRepo.GetByID(ctx, req.UserId)
+	if err != nil {
+		return err
+	}
+
+	var roles []model.Role
+	for _, id := range req.RoleIds {
+		roles = append(roles, model.Role{ID: uint(id)})
+	}
+
+	if req.Email != "" {
+		user.Email = req.Email
+	}
+	if req.Nickname != "" {
+		user.Name = req.Nickname
+	}
+	if req.Image != "" {
+		user.Image = req.Image
+	}
+	err = s.DB(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&user).Association("Roles").Replace(&roles); err != nil {
+			return err
+		}
+		if err = s.userRepo.Update(ctx, user); err != nil {
+			return err
+		}
+		// 4. 返回 nil 提交事务
+		return nil
+	})
+	return err
 }

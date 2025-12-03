@@ -4,12 +4,12 @@ function getBaseURL() {
   const env = process.env.FES_ENV || process.env.NODE_ENV || 'test'
   if (!validEnvs.includes(env)) {
     console.warn(`Invalid environment: ${env}. Falling back to test environment.`)
-    return 'https://test-manage-api.ohayo.date'
+    // return 'https://test-manage-api.ohayo.date'
   }
   const envToUrlMap = {
     development: 'http://localhost:8291',
-    prod: 'https://manage-api.ohayo.date',
-    test: 'https://test-manage-api.ohayo.date',
+    // prod: 'https://manage-api.ohayo.date',
+    // test: 'https://test-manage-api.ohayo.date',
   }
   return envToUrlMap[env as keyof typeof envToUrlMap]
 }

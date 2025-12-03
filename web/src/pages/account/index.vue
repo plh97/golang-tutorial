@@ -74,6 +74,33 @@ const {
   reqUserProfile,
 )
 
+const {
+  data: allRoles,
+  // run: getRoleList,
+} = useRequest(
+  async () => {
+    const res = await request('/role/list')
+    return res.list
+  },
+)
+
+// 🔥 核心新增：处理用户角色变更的 API
+// 假设后端有一个 PUT /v1/user/{id}/roles 接口来更新用户的角色列表
+async function handleUserRoleChange(userId: string, newRoleIds: number[]) {
+  // 构造 PUT 的 Payload
+  const payload = {
+    role_ids: newRoleIds, // 提交选中的角色 ID 列表
+    user_id: userId,
+  }
+
+  // 调用后端 API 更新用户的角色列表
+  await request(`/user`, payload, { method: 'PUT' })
+  FMessage.success('用户角色更新成功！')
+
+  // 刷新列表
+  getUserProfileList()
+}
+
 const loadingOnce = ref(loading.value)
 const formRef = ref<typeof FForm>()
 watch(
@@ -108,8 +135,8 @@ function handleChange(page: number, pageSize: number) {
               全部
             </FOption>
             <FOption
-              v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))"
-              :key="id" :value="+id"
+              v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))" :key="id"
+              :value="+id"
             >
               {{ LOGIN_TYPE[+id] }}
             </FOption>
@@ -139,7 +166,37 @@ function handleChange(page: number, pageSize: number) {
   <div v-if="loading" class="loading">
     <LoadingOutlined class="icon" />
   </div>
+
   <FTable
+    v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
+    :data="data?.list ?? []"
+  >
+    <FTableColumn fixed="left" prop="id" label="用户ID" :min-width="60" />
+
+    <FTableColumn prop="name" label="用户姓名" />
+    <FTableColumn :min-width="50" label="性别">
+      <template #default="{ row }">
+        {{ GENDER[row.gender] }}
+      </template>
+    </FTableColumn>
+    <FTableColumn label="角色分配" :min-width="250">
+      <template #default="{ row }">
+        <FSelect
+          multiple filterable placeholder="分配用户角色" :model-value="row.roles?.map(r => r.id)"
+          :options="allRoles ?? []" value-field="id" label-field="name"
+          @change="(newIds: number[]) => handleUserRoleChange(row.user_id, newIds)"
+        />
+      </template>
+    </FTableColumn>
+
+    <FTableColumn :min-width="163" prop="create_time" label="创建时间">
+      <template #default="{ row }">
+        {{ formatTimestamp(row.created_at) }}
+      </template>
+    </FTableColumn>
+  </FTable>
+
+  <!-- <FTable
     v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
     :data="data?.list ?? []"
   >
@@ -170,16 +227,10 @@ function handleChange(page: number, pageSize: number) {
         {{ formatTimestamp(row.update_time * 1000) }}
       </template>
     </FTableColumn>
-  </FTable>
+  </FTable> -->
   <FPagination
-    v-if="!loadingOnce"
-    class="pagination"
-    show-total
-    :total-count="data?.page?.total"
-    show-size-changer
-    show-quick-jumper
-    :page-size="pageState.page_size"
-    @change="handleChange"
+    v-if="!loadingOnce" class="pagination" show-total :total-count="data?.page?.total" show-size-changer
+    show-quick-jumper :page-size="pageState.page_size" @change="handleChange"
   />
 </template>
 
@@ -220,6 +271,7 @@ nav {
   flex: 1;
   display: flex;
   flex-direction: column;
+
   :global(.table .fes-table-body-wrapper) {
     flex: 1;
     overflow: scroll;

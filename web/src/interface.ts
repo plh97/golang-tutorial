@@ -16,6 +16,7 @@ export interface ITag {
   title: string
 }
 export interface IUserProfile {
+  userId: number
   image: string[]
   id: number
   user_id: number

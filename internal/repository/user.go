@@ -14,6 +14,7 @@ type UserRepository interface {
 	Update(ctx context.Context, user *model.User) error
 	GetByID(ctx context.Context, id string) (*model.User, error)
 	GetUserList(ctx context.Context) (*[]model.User, error)
+	GetUserCount(ctx context.Context) (int, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
 }
 
@@ -56,13 +57,22 @@ func (r *userRepository) GetByID(ctx context.Context, userId string) (*model.Use
 
 func (r *userRepository) GetUserList(ctx context.Context) (*[]model.User, error) {
 	var user []model.User
-	if err := r.DB(ctx).Find(&user).Error; err != nil {
+	if err := r.DB(ctx).Preload("Roles").Find(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, v1.ErrNotFound
 		}
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepository) GetUserCount(ctx context.Context) (int, error) {
+	var count int64
+	err := r.DB(ctx).Preload("Roles").Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
 }
 
 func (r *userRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {

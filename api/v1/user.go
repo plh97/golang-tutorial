@@ -21,7 +21,7 @@ type LoginResponse struct {
 
 type UpdateProfileRequest struct {
 	Nickname string `json:"nickname" example:"alan"`
-	Email    string `json:"email" binding:"required,email" example:"1234@gmail.com"`
+	Email    string `json:"email" example:"1234@gmail.com"`
 	Image    string `json:"image"`
 }
 type GetProfileResponseData struct {
@@ -44,4 +44,12 @@ type GetUserListResponseData struct {
 type GetUserListResponse struct {
 	Response
 	Data GetUserListResponseData
+}
+
+type UpdateUserRequest struct {
+	UserId   string `json:"user_id" binding:"required"`
+	Nickname string `json:"nickname" example:"alan"`
+	Email    string `json:"email"`
+	Image    string `json:"image"`
+	RoleIds  []uint `json:"role_ids"`
 }

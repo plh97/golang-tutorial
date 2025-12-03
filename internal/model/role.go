@@ -2,6 +2,7 @@ package model
 
 type Role struct {
 	BaseModel
+	ID          uint         `gorm:"column:id;type:int;autoIncrement;primaryKey" json:"id"`
 	Name        string       `gorm:"column:name;type:varchar(50);not null;unique" json:"name"`
 	Key         string       `gorm:"column:key;type:varchar(50);not null;unique" json:"key"`
 	Status      int          `gorm:"column:status;type:tinyint;default:1" json:"status"`

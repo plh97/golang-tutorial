@@ -69,5 +69,5 @@ func (h *RoleHandler) UpdateRolePermissions(ctx *gin.Context) {
 	}
 
 	// For now, we'll just return a success response.
-	v1.HandleSuccess(ctx, gin.H{"message": "Role permissions updated successfully"})
+	v1.HandleSuccess(ctx, nil)
 }

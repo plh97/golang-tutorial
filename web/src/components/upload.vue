@@ -20,7 +20,7 @@ const inputRef = ref()
 
 const maxSize = ref(5) // MB
 
-const fileList = ref<FileItem[]>(props.modelValue?.map(url => ({ url })) as FileItem[])
+const fileList = ref<FileItem[]>(props?.modelValue?.map(url => ({ url })) as FileItem[])
 
 async function handleUpload({ file, onProgress, onSuccess }: { file: File, onProgress: (progress: { percent: number }) => void, onSuccess: (url: string) => void }) {
   const fileExt = file.name.split('.').pop() || 'png'

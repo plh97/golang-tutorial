@@ -5,13 +5,15 @@ import (
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/model"
 	"go-nunu/internal/repository"
+
+	"gorm.io/gorm"
 )
 
 type RoleService interface {
 	GetRole(ctx context.Context, id int64) (*model.Role, error)
 	CreateRole(ctx context.Context, req v1.CreateRoleRequest) (*model.Role, error)
 	GetRoleList(ctx context.Context) ([]model.Role, error)
-	UpdateRolePermissions(ctx context.Context, roleId int64, permissionIds []int) error
+	UpdateRolePermissions(ctx context.Context, roleId int64, permissionIds []uint) error
 }
 
 func NewRoleService(
@@ -34,9 +36,10 @@ func (s *roleService) GetRole(ctx context.Context, id int64) (*model.Role, error
 }
 
 func (s *roleService) CreateRole(ctx context.Context, req v1.CreateRoleRequest) (*model.Role, error) {
-	permissions := make([]model.Permission, len(req.PermissionIds))
-	for i, id := range req.PermissionIds {
-		permissions[i] = model.Permission{ID: id}
+
+	var permissions []model.Permission
+	for _, id := range req.PermissionIds {
+		permissions = append(permissions, model.Permission{ID: uint(id)})
 	}
 	role := &model.Role{
 		Name:        req.Name,
@@ -51,22 +54,27 @@ func (s *roleService) GetRoleList(ctx context.Context) ([]model.Role, error) {
 	return s.roleRepository.GetRoleList(ctx)
 }
 
-func (s *roleService) UpdateRolePermissions(ctx context.Context, roleId int64, permissionIds []int) error {
-	// Fetch the role
-	role, err := s.roleRepository.GetRole(ctx, roleId)
-	if err != nil {
-		return err
+func (s *roleService) UpdateRolePermissions(ctx context.Context, roleID int64, permissionIDs []uint) error {
+	var role model.Role
+
+	// 1. 查找角色 (必须先查出来才能操作关联)
+	// 注意：ID 统一使用 uint 类型
+	if err := s.DB(ctx).First(&role, roleID).Error; err != nil {
+		return err // 角色不存在，返回 gorm.ErrRecordNotFound
 	}
 
-	// Update permissions
-	permissions := make([]model.Permission, len(permissionIds))
-	for i, id := range permissionIds {
-		permissions[i] = model.Permission{ID: id}
+	var permissions []model.Permission
+	for _, id := range permissionIDs {
+		permissions = append(permissions, model.Permission{ID: uint(id)})
 	}
-	role.Permissions = permissions
+	err := s.DB(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&role).Association("Permissions").Replace(&permissions); err != nil {
+			return err // 关联失败，回滚
+		}
 
-	// Here you would typically call a repository method to save the updated role.
-	// For simplicity, we'll assume the roleRepository has an UpdateRole method.
-	_, err = s.roleRepository.UpdateRole(ctx, role) // This should be an update method in a real scenario
+		// 4. 返回 nil 提交事务
+		return nil
+	})
+
 	return err
 }

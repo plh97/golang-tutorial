@@ -58,9 +58,9 @@ const { run: getAllPermissions } = useRequest(
     manual: false,
     onSuccess: (resData) => {
       // 假设后端直接返回 list 数组
-      allPermissions.value = resData.list || resData.data.list || [];
+      allPermissions.value = resData.list || resData.data.list || []
     },
-  }
+  },
 )
 
 const state = reactive({
@@ -74,7 +74,7 @@ watch(
     if (show) {
       getAllPermissions() // Modal 打开时加载权限列表
     }
-  }
+  },
 )
 
 const searchState = reactive(defaultValue)
@@ -154,42 +154,36 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
   const payload = {
     permission_ids: newPermIds,
     id: roleId,
-  };
+  }
 
   // 2. 调用后端专用 PUT 接口
   // 我们假设后端已经实现了一个 PUT /v1/role/{id}/permissions 接口
-  try {
-    await request(`/role`, payload, { method: 'PUT' });
-    FMessage.success('权限分配成功！');
+  await request(`/role`, payload, { method: 'PUT' })
+  FMessage.success('权限分配成功！')
 
-    // 3. 优化：局部刷新
-    // 既然更新成功了，我们手动更新前端列表数据，防止全表刷新
-    const updatedRole = data.value?.list.find(r => r.id === roleId);
-    if (updatedRole) {
-      // 注意：因为我们没有获取权限对象的 name/key，所以我们手动用 ID 列表更新当前行的 permissions 属性
-      // (这是客户端优化，实际项目中应该让后端返回完整的更新后的 Role 对象)
-      updatedRole.permissions = newPermIds.map(id => {
-        // 找到对应的权限对象，保持数据完整性
-        const perm = allPermissions.value.find(p => p.id === id)
-        return { id: id, name: perm?.name, key: perm?.key } // 保持 table 结构不崩溃
-      });
-    }
-
-  } catch (error) {
-    FMessage.error('权限分配失败');
-    // 失败后需要重新加载列表，以恢复被修改的下拉框状态
-    getRoleList();
+  // 3. 优化：局部刷新
+  // 既然更新成功了，我们手动更新前端列表数据，防止全表刷新
+  const updatedRole = data.value?.list.find(r => r.id === roleId)
+  if (updatedRole) {
+    // 注意：因为我们没有获取权限对象的 name/key，所以我们手动用 ID 列表更新当前行的 permissions 属性
+    // (这是客户端优化，实际项目中应该让后端返回完整的更新后的 Role 对象)
+    updatedRole.permissions = newPermIds.map((id) => {
+      // 找到对应的权限对象，保持数据完整性
+      const perm = allPermissions.value.find(p => p.id === id)
+      return { id, name: perm?.name, key: perm?.key } // 保持 table 结构不崩溃
+    })
   }
 }
-
 </script>
 
 <template>
   <nav>
     <h1>账号资料</h1>
     <div>
-      <FForm ref="formRef" :model="data" label-position="right" :span="12" align="flex-start"
-        class="user-profile-search-form" @keydown.enter="getRoleList">
+      <FForm
+        ref="formRef" :model="data" label-position="right" :span="12" align="flex-start"
+        class="user-profile-search-form" @keydown.enter="getRoleList"
+      >
         <FFormItem prop="id" label="ID:">
           <FInput v-model="searchState.id" placeholder="请输入ID" @input="pageState.current_page = 1" />
         </FFormItem>
@@ -201,8 +195,10 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
             <FOption :value="0">
               全部
             </FOption>
-            <FOption v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))" :key="id"
-              :value="+id">
+            <FOption
+              v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))" :key="id"
+              :value="+id"
+            >
               {{ LOGIN_TYPE[+id] }}
             </FOption>
           </FSelect>
@@ -227,15 +223,19 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
   <div v-if="loading" class="loading">
     <LoadingOutlined class="icon" />
   </div>
-  <FTable v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
-    :data="data?.list ?? []">
+  <FTable
+    v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
+    :data="data?.list ?? []"
+  >
     <FTableColumn fixed="left" prop="id" label="Role ID" :min-width="60" />
     <FTableColumn prop="name" label="角色名称" :min-width="150" />
     <FTableColumn label="权限分配/操作" :min-width="350">
       <template #default="{ row }">
-        <FSelect multiple filterable placeholder="分配权限" :model-value="row.permissions?.map((p: any) => p.id)"
-          :options="allPermissions" valueField="id" labelField="name"
-          @change="(newIds: number[]) => handlePermissionChange(row.id, newIds)" />
+        <FSelect
+          multiple filterable placeholder="分配权限" :model-value="row.permissions?.map((p: any) => p.id)"
+          :options="allPermissions" value-field="id" label-field="name"
+          @change="(newIds: number[]) => handlePermissionChange(row.id, newIds)"
+        />
       </template>
     </FTableColumn>
     <FTableColumn :min-width="163" prop="created_at" label="创建时间">
@@ -244,11 +244,15 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
       </template>
     </FTableColumn>
   </FTable>
-  <FPagination v-if="!loadingOnce" class="pagination" show-total :total-count="data?.page?.total" show-size-changer
-    show-quick-jumper :page-size="pageState.page_size" @change="handleChange" />
+  <FPagination
+    v-if="!loadingOnce" class="pagination" show-total :total-count="data?.page?.total" show-size-changer
+    show-quick-jumper :page-size="pageState.page_size" @change="handleChange"
+  />
   <FModal v-model:show="state.modal" title="创建Role" display-directive="show" @ok="handleCreateRole">
-    <FForm ref="formRef" :model="createFormState" label-position="top" :span="12" align="flex-start"
-      class="user-profile-search-form1">
+    <FForm
+      ref="formRef" :model="createFormState" label-position="top" :span="12" align="flex-start"
+      class="user-profile-search-form1"
+    >
       <FFormItem prop="name" label="角色名称:">
         <FInput v-model="createFormState.name" placeholder="例如：运营经理" />
       </FFormItem>
@@ -259,15 +263,21 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
 
       <FFormItem prop="permission_ids" label="分配权限:">
         <FSelect v-model="createFormState.permission_ids" placeholder="请选择角色权限" multiple filterable>
-          <FOption v-for="perm in allPermissions" :key="perm.id" :value="perm.id"
-            :label="`${perm.name} (${perm.key})`" />
+          <FOption
+            v-for="perm in allPermissions" :key="perm.id" :value="perm.id"
+            :label="`${perm.name} (${perm.key})`"
+          />
         </FSelect>
       </FFormItem>
 
       <FFormItem prop="status" label="状态:">
         <FRadioGroup v-model="createFormState.status">
-          <FRadio :value="1">启用</FRadio>
-          <FRadio :value="0">禁用</FRadio>
+          <FRadio :value="1">
+            启用
+          </FRadio>
+          <FRadio :value="0">
+            禁用
+          </FRadio>
         </FRadioGroup>
       </FFormItem>
     </FForm>

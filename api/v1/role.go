@@ -17,12 +17,12 @@ type CreateRoleRequest struct {
 	Name          string `json:"name"`
 	Key           string `json:"key"`
 	Status        int    `json:"status"`
-	PermissionIds []int  `json:"permission_ids"`
+	PermissionIds []uint  `json:"permission_ids"`
 }
 
 type UpdateRolePermissionsRequest struct {
 	ID            int64 `json:"id"`
-	PermissionIds []int `json:"permission_ids"`
+	PermissionIds []uint `json:"permission_ids"`
 }
 type CreateRoleResponse struct {
 	Response

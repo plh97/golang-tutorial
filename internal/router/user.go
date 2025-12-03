@@ -22,6 +22,7 @@ func InitUserRouter(
 		noStrictAuthRouter.GET("/profile", deps.UserHandler.GetProfile)
 		noStrictAuthRouter.POST("/user/list", deps.UserHandler.GetUserList)
 		noStrictAuthRouter.PUT("/profile", deps.UserHandler.UpdateProfile)
+		noStrictAuthRouter.PUT("/user", deps.UserHandler.UpdateUser)
 	}
 
 	// Strict permission routing group

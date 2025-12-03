@@ -35,7 +35,6 @@ const data = reactive({
   man_sign_up_limit: 0,
   woman_sign_up_limit: 0,
   banner_img: '',
-  // banner_img: 'https://img.ohayo.date/activity_banner/0f94eb15-c4ed-4147-90d5-2be0437ddbfa.png',
   man_price: 0,
   man_price_jp: 0,
   woman_price: 0,
