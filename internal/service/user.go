@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/model"
 	"go-nunu/internal/repository"
@@ -58,11 +60,15 @@ func (s *userService) Register(ctx context.Context, req *v1.RegisterRequest) err
 		UserId:   userId,
 		Email:    req.Email,
 		Password: string(hashedPassword),
+		Name:     "",
 	}
 	// Transaction demo
 	err = s.tm.Transaction(ctx, func(ctx context.Context) error {
 		// Create a user
 		if err = s.userRepo.Create(ctx, user); err != nil {
+			// USE TO JSON
+			userJson, _ := json.Marshal(user)
+			fmt.Println("6666666", string(userJson))
 			return err
 		}
 		// TODO: other repo
@@ -97,7 +103,7 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*v1.GetPro
 
 	return &v1.GetProfileResponseData{
 		UserId:   user.UserId,
-		Nickname: user.Name,
+		Name: user.Name,
 		Email:    user.Email,
 		Image:    user.Image,
 	}, nil
@@ -128,8 +134,8 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *v1.
 	if req.Email != "" {
 		user.Email = req.Email
 	}
-	if req.Nickname != "" {
-		user.Name = req.Nickname
+	if req.Name != "" {
+		user.Name = req.Name
 	}
 	user.Image = req.Image
 
@@ -154,8 +160,8 @@ func (s *userService) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest)
 	if req.Email != "" {
 		user.Email = req.Email
 	}
-	if req.Nickname != "" {
-		user.Name = req.Nickname
+	if req.Name != "" {
+		user.Name = req.Name
 	}
 	if req.Image != "" {
 		user.Image = req.Image

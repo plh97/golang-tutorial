@@ -66,8 +66,8 @@ export async function request(url: string, data: Record<string, any> = {}, optio
       FMessage.error({
         content: data?.message,
       })
-      // setToken('')
-      // location.replace('/login')
+      setToken('')
+      location.replace('/login')
       return Promise.reject(new Error('未登录或登录已过期，请重新登录'))
     }
     if (data?.code !== 0) {

@@ -20,7 +20,7 @@ const props = defineProps<{
 const data = reactive<Partial<IUserProfile>>({
   id: 0,
   user_id: 0,
-  nickname: '',
+  name: '',
   birth: 0,
   education_level: 0,
   gender: 0,
@@ -182,8 +182,8 @@ function locationDisplay(user: IUserProfile) {
       <h2 class="sub-title">
         个人信息
       </h2>
-      <FFormItem label="姓名" prop="nickname" :rules="[{ validator, required: true, type: 'string', message: '请输入姓名' }]">
-        <FInput v-model="data.nickname" :maxlength="10" :disabled="props.readonly" placeholder="请输入" />
+      <FFormItem label="姓名" prop="name" :rules="[{ validator, required: true, type: 'string', message: '请输入姓名' }]">
+        <FInput v-model="data.name" :maxlength="10" :disabled="props.readonly" placeholder="请输入" />
       </FFormItem>
 
       <FGrid :gutter="20">

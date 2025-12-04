@@ -19,7 +19,7 @@ function handleClick() {
     <a class="avatar-container" @click="handleClick">
       <FAvatar size="small" :src="initialState?.image" class="avatar" alt="avatar" />
       <span class="name">
-        {{ initialState.nickname || initialState.email || initialState.userId }}
+        {{ initialState.name || initialState.email || initialState.userId }}
       </span>
     </a>
     <FButton type="link" class="link" @click="handleLogout">

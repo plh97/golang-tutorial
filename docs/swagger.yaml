@@ -15,7 +15,7 @@ definitions:
         type: string
       image:
         type: string
-      nickname:
+      name:
         example: alan
         type: string
       userId:
@@ -74,7 +74,7 @@ definitions:
         type: string
       image:
         type: string
-      nickname:
+      name:
         example: alan
         type: string
     required:

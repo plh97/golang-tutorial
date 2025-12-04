@@ -173,7 +173,7 @@
                 "image": {
                     "type": "string"
                 },
-                "nickname": {
+                "name": {
                     "type": "string",
                     "example": "alan"
                 },
@@ -263,7 +263,7 @@
                 "image": {
                     "type": "string"
                 },
-                "nickname": {
+                "name": {
                     "type": "string",
                     "example": "alan"
                 }

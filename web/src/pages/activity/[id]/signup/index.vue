@@ -343,7 +343,7 @@ const validator = useValidator(state)
     <FTableColumn prop="id" label="ID" :min-width="50" fixed="left" />
     <FTableColumn label="姓名" fixed="left">
       <template #default="{ row }">
-        <FEllipsis :content="row.user_profile?.nickname" style="max-width: 100%" />
+        <FEllipsis :content="row.user_profile?.name" style="max-width: 100%" />
       </template>
     </FTableColumn>
     <FTableColumn label="性别">

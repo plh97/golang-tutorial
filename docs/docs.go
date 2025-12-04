@@ -180,7 +180,7 @@ const docTemplate = `{
                 "image": {
                     "type": "string"
                 },
-                "nickname": {
+                "name": {
                     "type": "string",
                     "example": "alan"
                 },
@@ -270,7 +270,7 @@ const docTemplate = `{
                 "image": {
                     "type": "string"
                 },
-                "nickname": {
+                "name": {
                     "type": "string",
                     "example": "alan"
                 }

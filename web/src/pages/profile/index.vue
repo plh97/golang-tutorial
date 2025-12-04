@@ -27,7 +27,7 @@ defineRouteMeta({
 
 const data = reactive<Partial<IUserProfile>>({
   userId: 0,
-  nickname: '32',
+  name: '32',
   email: '',
   gender: 1,
   image: [],
@@ -74,8 +74,8 @@ async function handleSubmit() {
         <Upload v-model="data.image" :count="1" />
       </FFormItem>
 
-      <FFormItem label="姓名" prop="nickname" :rules="[{ validator, required: true, type: 'string', message: '请输入姓名' }]">
-        <FInput v-model="data.nickname" :maxlength="10" placeholder="请输入" />
+      <FFormItem label="姓名" prop="name" :rules="[{ validator, required: true, type: 'string', message: '请输入姓名' }]">
+        <FInput v-model="data.name" :maxlength="10" placeholder="请输入" />
       </FFormItem>
 
       <FGrid :gutter="20">

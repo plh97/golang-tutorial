@@ -20,7 +20,7 @@ export interface IUserProfile {
   image: string[]
   id: number
   user_id: number
-  nickname: string
+  name: string
   height: number
   body_type: number
   personality_type: number

@@ -43,7 +43,7 @@ const pageState = reactive({
 
 const defaultValue = {
   id: '',
-  nickname: '',
+  name: '',
   gender: 0,
   birth_max: 0,
   birth_min: 0,
@@ -69,7 +69,7 @@ function reset() {
 function reqUserProfile() {
   const data = {
     id: +searchState.id,
-    nickname: searchState.nickname,
+    name: searchState.name,
     gender: searchState.gender,
     is_stable: searchState.is_stable,
     birth_min: searchState.birth_min,
@@ -267,8 +267,8 @@ function handleLocationCityChange(val: string) {
         <FFormItem prop="id" label="ID:">
           <FInput v-model="searchState.id" placeholder="请输入ID" />
         </FFormItem>
-        <FFormItem prop="nickname" label="姓名:">
-          <FInput v-model="searchState.nickname" placeholder="请输入姓名" />
+        <FFormItem prop="name" label="姓名:">
+          <FInput v-model="searchState.name" placeholder="请输入姓名" />
         </FFormItem>
         <FFormItem prop="gender" label="性别:">
           <FSelect v-model="searchState.gender">
@@ -407,7 +407,7 @@ function handleLocationCityChange(val: string) {
     row-class-name="32r32r"
   >
     <FTableColumn fixed="left" prop="id" label="ID" :min-width="50" />
-    <FTableColumn fixed="left" prop="nickname" label="姓名" />
+    <FTableColumn fixed="left" prop="name" label="姓名" />
     <FTableColumn fixed="left" label="性别">
       <template #default="{ row }">
         {{ GENDER[row.gender] }}

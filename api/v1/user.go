@@ -20,15 +20,15 @@ type LoginResponse struct {
 }
 
 type UpdateProfileRequest struct {
-	Nickname string `json:"nickname" example:"alan"`
-	Email    string `json:"email" example:"1234@gmail.com"`
-	Image    string `json:"image"`
+	Name  string `json:"name" example:"alan"`
+	Email string `json:"email" example:"1234@gmail.com"`
+	Image string `json:"image"`
 }
 type GetProfileResponseData struct {
-	UserId   string `json:"userId"`
-	Nickname string `json:"nickname" example:"alan"`
-	Email    string `json:"email" example:"alan"`
-	Image    string `json:"image"`
+	UserId string `json:"userId"`
+	Name   string `json:"name" example:"alan"`
+	Email  string `json:"email" example:"alan"`
+	Image  string `json:"image"`
 }
 type GetProfileResponse struct {
 	Response
@@ -36,9 +36,6 @@ type GetProfileResponse struct {
 }
 
 type GetUserListResponseData struct {
-	// UserId   string `json:"userId"`
-	// Nickname string `json:"nickname" example:"alan"`
-	// Email    string `json:"email" example:"alan"`
 	List []model.User `json:"list"`
 }
 type GetUserListResponse struct {
@@ -47,9 +44,9 @@ type GetUserListResponse struct {
 }
 
 type UpdateUserRequest struct {
-	UserId   string `json:"user_id" binding:"required"`
-	Nickname string `json:"nickname" example:"alan"`
-	Email    string `json:"email"`
-	Image    string `json:"image"`
-	RoleIds  []uint `json:"role_ids"`
+	UserId  string `json:"user_id" binding:"required"`
+	Name    string `json:"name" example:"alan"`
+	Email   string `json:"email"`
+	Image   string `json:"image"`
+	RoleIds []uint `json:"role_ids"`
 }

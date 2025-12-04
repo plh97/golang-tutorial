@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/service"
 	"net/http"
@@ -66,6 +67,7 @@ func (h *UserHandler) Login(ctx *gin.Context) {
 
 	token, err := h.userService.Login(ctx, &req)
 	if err != nil {
+		fmt.Println(err)
 		v1.HandleError(ctx, http.StatusUnauthorized, v1.ErrUnauthorized, nil)
 		return
 	}
