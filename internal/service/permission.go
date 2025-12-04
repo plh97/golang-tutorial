@@ -39,8 +39,8 @@ func (s *permissionService) GetPermissionList(ctx context.Context, req v1.GetPer
 
 func (s *permissionService) CreatePermission(ctx context.Context, req v1.CreatePermissionRequest) (*model.Permission, error) {
 	permission := &model.Permission{
-		Name:   req.Name,
-		Key:    req.Key,
+		Name: req.Name,
+		Key:  req.Key,
 		// Status: req.Status,
 	}
 	return s.permissionRepository.CreatePermission(ctx, permission)

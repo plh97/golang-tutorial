@@ -17,6 +17,7 @@ import (
 	"go-nunu/internal/service"
 	"go-nunu/pkg/app"
 	"go-nunu/pkg/aws"
+	"go-nunu/pkg/casbin"
 	"go-nunu/pkg/jwt"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/server/http"
@@ -27,9 +28,10 @@ import (
 
 func NewWire(cfg *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	jwtJWT := jwt.NewJwt(cfg)
+	enforcer := casbinPkg.NewEnforcer()
 	handlerHandler := handler.NewHandler(logger)
 	db := repository.NewDB(cfg, logger)
-	repositoryRepository := repository.NewRepository(logger, db)
+	repositoryRepository := repository.NewRepository(logger, db, enforcer)
 	transaction := repository.NewTransaction(repositoryRepository)
 	sidSid := sid.NewSid()
 	serviceService := service.NewService(db, transaction, logger, sidSid, jwtJWT)
@@ -52,6 +54,7 @@ func NewWire(cfg *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 		Logger:            logger,
 		Config:            cfg,
 		JWT:               jwtJWT,
+		Casbin:            enforcer,
 		UserHandler:       userHandler,
 		CommonHandler:     commonHandler,
 		RoleHandler:       roleHandler,
@@ -90,3 +93,6 @@ func newApp(
 
 // 声明 R2 构造函数
 var awsSet = wire.NewSet(aws.NewR2Client)
+
+// 声明 R2 构造函数
+var casbinSet = wire.NewSet(casbinPkg.NewEnforcer)

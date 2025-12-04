@@ -25,6 +25,17 @@ func NewRoleHandler(
 	}
 }
 
+// GetRoleList godoc
+//
+//	@Summary	获取用户信息
+//	@Schemes
+//	@Description
+//	@Tags		Role模块
+//	@Accept		json
+//	@Produce	json
+//	@Security	Bearer
+//	@Success	200	{object}	v1.GetRoleListRequest
+//	@Router		/role/list [get]
 func (h *RoleHandler) GetRoleList(ctx *gin.Context) {
 	var req v1.GetRoleListRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {

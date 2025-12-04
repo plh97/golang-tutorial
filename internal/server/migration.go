@@ -4,9 +4,10 @@ import (
 	"context"
 	"go-nunu/internal/model"
 	"go-nunu/pkg/log"
+	"os"
+
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"os"
 )
 
 type MigrateServer struct {

@@ -15,7 +15,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "localhost:8000",
+    "host": "localhost:8291",
     "paths": {
         "/login": {
             "post": {
@@ -79,6 +79,33 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/v1.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/list": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role模块"
+                ],
+                "summary": "获取用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.GetRoleListRequest"
                         }
                     }
                 }
@@ -182,6 +209,23 @@
                 }
             }
         },
+        "v1.GetRoleListRequest": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "page_size": {
+                    "type": "integer"
+                }
+            }
+        },
         "v1.LoginRequest": {
             "type": "object",
             "required": [
@@ -252,9 +296,6 @@
         },
         "v1.UpdateProfileRequest": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "email": {
                     "type": "string",

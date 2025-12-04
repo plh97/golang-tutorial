@@ -91,6 +91,33 @@ const docTemplate = `{
                 }
             }
         },
+        "/role/list": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role模块"
+                ],
+                "summary": "获取用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.GetRoleListRequest"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -189,6 +216,23 @@ const docTemplate = `{
                 }
             }
         },
+        "v1.GetRoleListRequest": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "page_size": {
+                    "type": "integer"
+                }
+            }
+        },
         "v1.LoginRequest": {
             "type": "object",
             "required": [
@@ -259,9 +303,6 @@ const docTemplate = `{
         },
         "v1.UpdateProfileRequest": {
             "type": "object",
-            "required": [
-                "email"
-            ],
             "properties": {
                 "email": {
                     "type": "string",
@@ -289,7 +330,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8000",
+	Host:             "localhost:8291",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Nunu Example API",

@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-nunu/pkg/log"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {

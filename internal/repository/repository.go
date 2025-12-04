@@ -3,9 +3,12 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/glebarez/sqlite"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/zapgorm2"
+	"time"
+
+	"github.com/casbin/casbin/v2"
+	"github.com/glebarez/sqlite"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,30 +16,32 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"time"
 )
 
 const ctxTxKey = "TxKey"
 
 type Repository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	logger *log.Logger
+	e      *casbin.Enforcer
 	//rdb    *redis.Client
 	//mongo  *mongo.Client
-	logger *log.Logger
 }
 
 func NewRepository(
 	logger *log.Logger,
 	db *gorm.DB,
+	e *casbin.Enforcer,
 	// rdb *redis.Client,
 	//
 	//	mongo *mongo.Client,
 ) *Repository {
 	return &Repository{
-		db: db,
+		db:     db,
+		logger: logger,
+		e:      e,
 		//rdb:    rdb,
 		//mongo:  mongo,
-		logger: logger,
 	}
 }
 

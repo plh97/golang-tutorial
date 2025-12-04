@@ -21,6 +21,17 @@ definitions:
       userId:
         type: string
     type: object
+  v1.GetRoleListRequest:
+    properties:
+      current_page:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      page_size:
+        type: integer
+    type: object
   v1.LoginRequest:
     properties:
       email:
@@ -77,10 +88,8 @@ definitions:
       name:
         example: alan
         type: string
-    required:
-    - email
     type: object
-host: localhost:8000
+host: localhost:8291
 info:
   contact:
     email: support@swagger.io
@@ -137,6 +146,22 @@ paths:
       summary: 用户注册
       tags:
       - 用户模块
+  /role/list:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.GetRoleListRequest'
+      security:
+      - Bearer: []
+      summary: 获取用户信息
+      tags:
+      - Role模块
   /user:
     get:
       consumes:

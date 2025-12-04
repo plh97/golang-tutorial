@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	apiV1 "go-nunu/api/v1"
 	"go-nunu/docs"
 	"go-nunu/internal/middleware"
 	"go-nunu/internal/router"
 	"go-nunu/pkg/server/http"
+
+	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -38,6 +39,7 @@ func NewHTTPServer(
 		middleware.ResponseLogMiddleware(deps.Logger),
 		middleware.RequestLogMiddleware(deps.Logger),
 		//middleware.SignMiddleware(log),
+		middleware.AuthMiddleware(deps.Casbin),
 	)
 	s.GET("/", func(ctx *gin.Context) {
 		deps.Logger.WithContext(ctx).Info("hello")

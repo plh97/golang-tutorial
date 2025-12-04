@@ -102,10 +102,10 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*v1.GetPro
 	}
 
 	return &v1.GetProfileResponseData{
-		UserId:   user.UserId,
-		Name: user.Name,
-		Email:    user.Email,
-		Image:    user.Image,
+		UserId: user.UserId,
+		Name:   user.Name,
+		Email:  user.Email,
+		Image:  user.Image,
 	}, nil
 }
 

@@ -11,11 +11,12 @@ import (
 	"go-nunu/internal/server"
 	"go-nunu/internal/service"
 	"go-nunu/pkg/app"
+	"go-nunu/pkg/aws"
 	"go-nunu/pkg/jwt"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/server/http"
 	"go-nunu/pkg/sid"
-	"go-nunu/pkg/aws"
+	"go-nunu/pkg/casbin"
 
 	"github.com/google/wire"
 	"github.com/spf13/viper"
@@ -74,6 +75,11 @@ var awsSet = wire.NewSet(
 	aws.NewR2Client, // Wire 会自动处理 *viper.Viper 和 *log.Logger 的注入
 )
 
+// 声明 R2 构造函数
+var casbinSet = wire.NewSet(
+	casbinPkg.NewEnforcer, // ⭐ Add the Casbin Enforcer provider here ⭐
+)
+
 func NewWire(cfg *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		repositorySet,
@@ -85,6 +91,7 @@ func NewWire(cfg *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 		sid.NewSid,
 		jwt.NewJwt,
 		awsSet,
+		casbinSet,
 		newApp,
 	))
 }

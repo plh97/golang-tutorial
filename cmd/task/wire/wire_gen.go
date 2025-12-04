@@ -7,14 +7,15 @@
 package wire
 
 import (
-	"github.com/google/wire"
-	"github.com/spf13/viper"
 	"go-nunu/internal/repository"
 	"go-nunu/internal/server"
 	"go-nunu/internal/task"
 	"go-nunu/pkg/app"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/sid"
+
+	"github.com/google/wire"
+	"github.com/spf13/viper"
 )
 
 // Injectors from wire.go:

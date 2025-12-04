@@ -8,6 +8,7 @@ import (
 	"go-nunu/internal/server"
 	"go-nunu/pkg/app"
 	"go-nunu/pkg/log"
+
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )

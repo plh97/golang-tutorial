@@ -8,7 +8,7 @@ type CommonService interface {
 
 type commonService struct {
 	// R2 客户端应该是直接依赖，而不是通过 *Service 间接依赖
-	R2Client *aws.CloudflareR2 
+	R2Client *aws.CloudflareR2
 	// *Service // 如果不需要 *Service 的其他字段，就移除它
 }
 

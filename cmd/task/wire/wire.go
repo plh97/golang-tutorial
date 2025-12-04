@@ -10,6 +10,7 @@ import (
 	"go-nunu/pkg/app"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/sid"
+
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
