@@ -1,8 +1,0 @@
-p, admin, /index, GET
-p, admin, /home, GET
-p, admin, /users, GET
-p, admin, /users, POST
-p, operator, /index, GET
-p, operator, /home, GET
-g, zhangsan, admin
-g, wangwu, operator

@@ -6,7 +6,10 @@ import (
 	"go-nunu/internal/middleware"
 	"go-nunu/internal/router"
 	"go-nunu/pkg/server/http"
+	"go-nunu/web"
+	nethttp "net/http"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -25,6 +28,20 @@ func NewHTTPServer(
 		http.WithServerPort(deps.Config.GetInt("http.port")),
 	)
 
+	fsys, err := static.EmbedFolder(web.Assets(), "dist")
+	if err != nil {
+		panic(err)
+	}
+	// 设置前端静态资源
+	s.Use(static.Serve("/", fsys))
+	s.NoRoute(func(c *gin.Context) {
+		indexPageData, err := web.Assets().ReadFile("dist/index.html")
+		if err != nil {
+			c.String(nethttp.StatusNotFound, "404 page not found")
+			return
+		}
+		c.Data(nethttp.StatusOK, "text/html; charset=utf-8", indexPageData)
+	})
 	// swagger doc
 	docs.SwaggerInfo.BasePath = "/v1"
 	s.GET("/swagger/*any", ginSwagger.WrapHandler(

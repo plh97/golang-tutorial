@@ -11,7 +11,7 @@ function getBaseURL() {
     // prod: 'https://manage-api.ohayo.date',
     // test: 'https://test-manage-api.ohayo.date',
   }
-  return envToUrlMap[env as keyof typeof envToUrlMap]
+  return envToUrlMap[env as keyof typeof envToUrlMap] ?? ''
 }
 
 export const baseURL = getBaseURL()
