@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/model"
 
@@ -55,6 +56,11 @@ func (r *roleRepository) GetRoleList(ctx context.Context, req v1.GetRoleListRequ
 	if err != nil {
 		return nil, err
 	}
+	list, err := r.e.GetAllRoles()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("err2112:", list)
 	return roles, nil
 }
 
